@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pachranga Shop | Digital Menu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        :root {
+            --primary: #fb8500; 
+            --secondary: #023047;
+            --bg: #f8f9fa;
+            --white: #ffffff;
+            --green: #28a745;
+        }
+
+        body { font-family: 'Outfit', sans-serif; background-color: var(--bg); color: var(--secondary); margin: 0; padding: 0; padding-bottom: 100px; }
+        
+        header { 
+            text-align: center; padding: 40px 20px; 
+            background: var(--secondary);
+            color: white; border-bottom-left-radius: 35px; border-bottom-right-radius: 35px;
+            box-shadow: 0 10px 25px rgba(2, 48, 71, 0.3);
+        }
+        header h1 { margin: 0; font-weight: 800; font-size: 2.2rem; color: var(--primary); letter-spacing: 1px; }
+        header p { margin-top: 5px; opacity: 0.8; font-weight: 300; }
+
+        .container { padding: 15px; }
+
+        .category { 
+            background: var(--white); padding: 18px; border-radius: 15px; cursor: pointer;
+            margin-top: 15px; display: flex; justify-content: space-between; align-items: center;
+            font-weight: 700; box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            border-left: 6px solid var(--primary);
+        }
+        .category:after { content: '▼'; font-size: 0.8rem; color: var(--primary); transition: 0.3s; }
+        .category.active:after { transform: rotate(180deg); }
+
+        .items-container { max-height: 0; overflow: hidden; transition: all 0.4s ease; opacity: 0; }
+        .items-container.open { max-height: 1000px; opacity: 1; padding: 5px 0; }
+
+        .menu-item { 
+            background: var(--white); padding: 15px; margin: 10px 0; 
+            border-radius: 18px; display: flex; justify-content: space-between; align-items: center;
+            border: 1px solid #eee;
+        }
+        .item-info h3 { margin: 0; font-size: 1.05rem; color: #333; }
+        .item-info p { margin: 4px 0; font-size: 0.8rem; color: #777; }
+        .price-tag { font-weight: 800; color: var(--primary); font-size: 1.2rem; }
+
+        .footer-bar { 
+            position: fixed; bottom: 0; left: 0; width: 100%; background: var(--white); 
+            padding: 15px; box-shadow: 0 -10px 30px rgba(0,0,0,0.1);
+            text-align: center; box-sizing: border-box; z-index: 100;
+        }
+
+        .pay-btn-main { 
+            background: var(--green); color: white; padding: 15px 0; 
+            border-radius: 50px; border: none; font-weight: 800; font-size: 1.1rem;
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4); width: 85%; cursor: pointer;
+        }
+
+        /* Modal styling */
+        #payModal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); z-index: 2000; justify-content: center; align-items: center;
+        }
+        .modal-content {
+            background: white; padding: 30px; border-radius: 30px; width: 85%;
+            max-width: 340px; text-align: center; position: relative; box-sizing: border-box;
+        }
+        #qrcode { margin: 20px auto; display: flex; justify-content: center; min-height: 160px; align-items: center; background: #f9f9f9; border-radius: 15px; padding: 10px; }
+        
+        input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 12px; border: 2px solid #eee; font-family: inherit; font-size: 1rem; box-sizing: border-box; outline: none; }
+        input:focus { border-color: var(--primary); }
+
+        .upi-link-wrapper { width: 100%; display: flex; justify-content: center; margin-top: 15px; }
+        .upi-btn-centered { 
+            background: var(--secondary); color: white; padding: 14px 0; 
+            border-radius: 15px; text-decoration: none; font-weight: 800; 
+            font-size: 1rem; width: 100%; display: block; text-align: center;
+        }
+        .close-x { position: absolute; top: 15px; right: 20px; font-size: 1.8rem; cursor: pointer; color: #ccc; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>PACHRANGA SHOP</h1>
+    <p>Premium Street Food Experience</p>
+</header>
+
+<div class="container">
+    <div class="category" onclick="toggleItems(this)">🥟 MOMOS SPECIAL</div>
+    <div class="items-container">
+        <div class="menu-item"><div class="item-info"><h3>Steam Momos</h3><p>Classic veg filling</p></div><div class="price-tag">₹50</div></div>
+        <div class="menu-item"><div class="item-info"><h3>Fry Momos</h3><p>Crispy golden fry</p></div><div class="price-tag">₹50</div></div>
+        <div class="menu-item"><div class="item-info"><h3>Kurkure Momos</h3><p>Extra crunchy coating</p></div><div class="price-tag">₹100</div></div>
+    </div>
+
+    <div class="category" onclick="toggleItems(this)">🥢 CHINESE CORNER</div>
+    <div class="items-container">
+        <div class="menu-item"><div class="item-info"><h3>Manchurian</h3><p>Veg balls in spicy sauce</p></div><div class="price-tag">₹80</div></div>
+        <div class="menu-item"><div class="item-info"><h3>Chowmein</h3><p>Veg / Singapuri / Hakka</p></div><div class="price-tag">₹50</div></div>
+        <div class="menu-item"><div class="item-info"><h3>Chilli Potato</h3><p>Sweet & Spicy</p></div><div class="price-tag">₹50</div></div>
+    </div>
+
+    <div class="category" onclick="toggleItems(this)">🍔 QUICK BITES</div>
+    <div class="items-container">
+        <div class="menu-item"><div class="item-info"><h3>Burger</h3><p>Crispy Aloo Patty</p></div><div class="price-tag">₹25</div></div>
+        <div class="menu-item"><div class="item-info"><h3>Finger Chips</h3><p>Salted French Fries</p></div><div class="price-tag">₹50</div></div>
+        <div class="menu-item"><div class="item-info"><h3>Golgappe</h3><p>Pani Puri (4 Pieces)</p></div><div class="price-tag">₹10</div></div>
+    </div>
+</div>
+
+<div class="footer-bar">
+    <button class="pay-btn-main" onclick="openPay()">PAY VIA UPI</button>
+</div>
+
+<div id="payModal">
+    <div class="modal-content">
+        <span class="close-x" onclick="closePay()">&times;</span>
+        <h3 style="margin-bottom: 15px; color: var(--secondary);">Payment Details</h3>
+        
+        <input type="number" id="payAmount" placeholder="Enter Total Bill (₹)" oninput="generateQR()">
+        <input type="text" id="orderNote" placeholder="Table No / Customer Name" oninput="generateQR()">
+        
+        <div id="qrcode">QR will appear here</div>
+        
+        <div class="upi-link-wrapper">
+            <a id="upi-link" href="#" class="upi-btn-centered">OPEN UPI APP</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    const vpa = "paytm.s1zfpm2@pty";
+    const shopName = "Pachranga Shop";
+
+    function toggleItems(el) {
+        el.classList.toggle("active");
+        el.nextElementSibling.classList.toggle("open");
+    }
+
+    function openPay() {
+        document.getElementById('payModal').style.display = "flex";
+    }
+
+    function generateQR() {
+        const amt = document.getElementById('payAmount').value;
+        const note = document.getElementById('orderNote').value || "Order";
+        const qrDiv = document.getElementById('qrcode');
+        
+        if(amt > 0) {
+            const upiStr = `upi://pay?pa=${vpa}&pn=${encodeURIComponent(shopName)}&am=${amt}&tn=${encodeURIComponent(note)}&cu=INR`;
+            qrDiv.innerHTML = "";
+            new QRCode(qrDiv, { text: upiStr, width: 160, height: 160 });
+            document.getElementById('upi-link').href = upiStr;
+        } else {
+            qrDiv.innerHTML = "Enter amount to see QR";
+            document.getElementById('upi-link').href = "#";
+        }
+    }
+
+    function closePay() { document.getElementById('payModal').style.display = "none"; }
+</script>
+
+</body>
+</html>
